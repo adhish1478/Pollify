@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts',  # Custom app for user accounts
+    'rest_framework',  # Django REST Framework for API support
 ]
 
 MIDDLEWARE = [
@@ -74,8 +76,12 @@ WSGI_APPLICATION = 'pollify.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'pollify_db',
+        'USER': 'postgres',
+        'PASSWORD': '1234',  # Replace with your actual password
+        'HOST': 'localhost',  # Or your database host
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
 
@@ -120,3 +126,9 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# default user model
+AUTH_USER_MODEL = 'accounts.CustomUser'
+# Media files settings
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
