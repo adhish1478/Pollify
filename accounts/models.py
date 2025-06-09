@@ -23,6 +23,7 @@ class CreateUserManager(BaseUserManager):
 class CustomUser(AbstractUser):
     username= None
     email= models.EmailField(unique=True)
+    full_name= models.CharField(max_length=255, blank=True)
     bio= models.TextField(blank=True, max_length=500)
     profile_picture= models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     is_verified= models.BooleanField(default=False)
