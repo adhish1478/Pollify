@@ -18,7 +18,7 @@ class PollListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(created_by= self.request.user)
 
-class PollDetailView(generics.RetrieveDestroyAPIView):
+class PollDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset= Poll.objects.all()
     serializer_class= PollSerializer
     permission_classes= [IsOwnerOrReadOnly]
@@ -26,4 +26,6 @@ class PollDetailView(generics.RetrieveDestroyAPIView):
     def put(self, request, *args, **kwargs):
         return Response({"detail": "Updating a poll is not allowed."}, status= status.HTTP_403_FORBIDDEN)
     def patch(self, request, *args, **kwargs):
-        return Response({"detail": "Updating a poll is not allowed."}, status= status.HTTP_403_FORBIDDEN)
+        if set(request.data) - {'end_date'}:
+            return Response({"detail": "Updating fields other than end_date is not allowed."}, status=status.HTTP_403_FORBIDDEN)
+        return self.partial_update(request, *args, **kwargs)

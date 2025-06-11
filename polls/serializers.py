@@ -36,3 +36,17 @@ class PollSerializer(serializers.ModelSerializer):
         for option in option_data:
             PollOption.objects.create(poll=poll, **option)
         return poll
+    
+    # This method is used to update the Poll end_date only with validated data.
+    def update(self, instance, validated_data):
+        allowed_fields = ['end_date']
+        disallowed_fields= [field for field in validated_data if field not in allowed_fields]
+
+        if disallowed_fields:
+            raise serializers.ValidationError(f"Updating fields {', '.join(disallowed_fields)} is not allowed.")
+        
+        # Update the end_date if provided
+        instance.end_date= validated_data.get('end_date', instance.end_date)
+        instance.save()
+        return instance
+    
