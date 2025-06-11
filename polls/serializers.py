@@ -1,5 +1,6 @@
 from .models import Poll, PollOption
 from rest_framework import serializers
+from django.utils import timezone
 
 class PollOptionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -10,8 +11,16 @@ class PollSerializer(serializers.ModelSerializer):
     options= PollOptionSerializer(many= True)
     class Meta:
         model= Poll
-        fields= ['id','question','image','created_by','options']
+        fields= ['id','question','image','created_by','end_date','options']
         read_only_fields= ['created_by']
+
+    def get_is_active(self, obj):
+        return obj.is_active()
+
+    def validate_end_date(self, value):
+        if value and value < timezone.now():
+            raise serializers.ValidationError("End date cannot be in the past.")
+        return value
 
     def validate_options(self, value):
         if len(value) < 2:
