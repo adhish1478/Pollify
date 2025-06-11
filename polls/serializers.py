@@ -7,7 +7,7 @@ class PollOptionSerializer(serializers.ModelSerializer):
         fields= ['id', 'option_text']
 
 class PollSerializer(serializers.ModelSerializer):
-    options= PollOptionSerializer(many= True, read_only=True)
+    options= PollOptionSerializer(many= True)
     class Meta:
         model= Poll
         fields= ['id','question','image','created_by','options']
