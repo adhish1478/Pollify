@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',  # Django REST Framework for API support
     'polls',
     'drf_yasg',  # For Swagger documentation
+    'channels' # For WebSocket support
 ]
 
 REST_FRAMEWORK = {
@@ -150,3 +151,16 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 # Media files settings
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Channels settings
+ASGI_APPLICATION = 'pollify.asgi.application'
+
+# Channels layers configuration (Redis)
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [("127.0.0.1", 6379)], # Adjust the Redis host and port as needed
+        }
+    }
+}
