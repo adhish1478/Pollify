@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',  # Django REST Framework for API support
     'polls',
     'drf_yasg',  # For Swagger documentation
-    'channels' # For WebSocket support
+    'channels', # For WebSocket support
+    'votes',  # App for handling votes
 ]
 
 REST_FRAMEWORK = {
