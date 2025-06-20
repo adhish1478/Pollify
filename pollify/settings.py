@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-86^0goh+g0(qan*po8w#m2s0*&h=z2ttfyrig@e8v&vsun=qj9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -41,7 +41,23 @@ INSTALLED_APPS = [
     'rest_framework',  # Django REST Framework for API support
     'polls',
     'drf_yasg',  # For Swagger documentation
+    'channels', # For WebSocket support
+    'votes',  # App for handling votes
+    'django_extensions',  # Optional: For additional management commands and features
 ]
+
+# Channels settings
+ASGI_APPLICATION = "pollify.asgi.application"
+
+# Channels layers configuration (Redis)
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [("127.0.0.1", 6379)], # Adjust the Redis host and port as needed
+        }
+    }
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -79,7 +95,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'pollify.wsgi.application'
+# WSGI_APPLICATION = 'pollify.wsgi.application'
 
 
 # Database

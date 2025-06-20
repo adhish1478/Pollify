@@ -1,0 +1,62 @@
+<!-- polls/templates/polls/poll_detail.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Poll</title>
+</head>
+<body>
+  <h1 id="poll-title"></h1>
+  <ul id="options-list"></ul>
+
+  <script>
+    const pollId = "{{ poll_id|escapejs }}" ;  // Django will inject the poll ID here
+
+    if (!pollId) {
+      console.error("Poll ID is not defined!");
+    }
+
+    const socket = new WebSocket(`ws://localhost:8000/ws/polls/${pollId}/`);
+
+    socket.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        const optionsList = document.getElementById("options-list");
+        optionsList.innerHTML = "";
+
+        data.options.forEach(option => {
+            const li = document.createElement("li");
+            const button = document.createElement("button");
+            button.innerText = `${option.text} - ${option.votes} votes`;
+            button.onclick = () => {
+                socket.send(JSON.stringify({ option_id: option.id }));
+            };
+            li.appendChild(button);
+            optionsList.appendChild(li);
+        });
+    };
+
+    socket.onopen = function() {
+        console.log("WebSocket connected");
+    };
+
+    socket.onclose = function() {
+        console.log("WebSocket disconnected");
+    };
+
+    function vote(optionId) {
+      socket.send(JSON.stringify({ option_id: optionId }));
+    }
+
+    fetch(`/api/polls/${pollId}/`)
+      .then(res => res.json())
+      .then(poll => {
+        document.getElementById('poll-title').innerText = poll.question;
+        const list = document.getElementById('options-list');
+        poll.options.forEach(opt => {
+          const li = document.createElement('li');
+          li.innerHTML = `<button onclick="vote(${opt.id})">${opt.text}</button>`;
+          list.appendChild(li);
+        });
+      });
+  </script>
+</body>
+</html>
