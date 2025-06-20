@@ -1,7 +1,13 @@
-from .views import PollListCreateView, PollDetailView
-from django.urls import path
+from .views import PollViewSet, poll_detail
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+
+
+router= DefaultRouter()
+router.register(r'', PollViewSet)
+
 
 urlpatterns=[
-    path('', PollListCreateView.as_view(), name='poll-list-create'),
-    path('<int:pk>/', PollDetailView.as_view(), name='poll-detail'),
+    path('', include(router.urls)),
+    path('poll-page/<int:poll_id>/', poll_detail, name='poll-detail')
 ]
