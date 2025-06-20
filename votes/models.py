@@ -7,7 +7,7 @@ from polls.models import Poll, PollOption
 class Vote(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     poll= models.ForeignKey(Poll, on_delete=models.CASCADE)
-    option= models.ForeignKey(PollOption, on_delete=models.CASCADE)
+    option= models.ForeignKey(PollOption, on_delete=models.CASCADE, related_name='votes')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
