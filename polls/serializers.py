@@ -3,15 +3,17 @@ from rest_framework import serializers
 from django.utils import timezone
 
 class PollOptionSerializer(serializers.ModelSerializer):
+    number_of_votes= serializers.IntegerField(read_only=True)
     class Meta:
         model= PollOption
-        fields= ['id', 'option_text']
+        fields= ['id', 'option_text', 'number_of_votes']
 
 class PollSerializer(serializers.ModelSerializer):
     options= PollOptionSerializer(many= True)
+    is_active= serializers.SerializerMethodField()
     class Meta:
         model= Poll
-        fields= ['id','question','image','created_by','end_date','options']
+        fields= ['id','question','image','created_by','end_date','options', 'is_active']
         read_only_fields= ['created_by']
 
     def get_is_active(self, obj):

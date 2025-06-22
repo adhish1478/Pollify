@@ -25,7 +25,7 @@
         data.options.forEach(option => {
             const li = document.createElement("li");
             const button = document.createElement("button");
-            button.innerText = `${option.text} - ${option.votes} votes`;
+            button.innerText = `${option.option_text} - ${option.number_of_votes} votes`;
             button.onclick = () => {
                 socket.send(JSON.stringify({ option_id: option.id }));
             };
@@ -53,7 +53,7 @@
         const list = document.getElementById('options-list');
         poll.options.forEach(opt => {
           const li = document.createElement('li');
-          li.innerHTML = `<button onclick="vote(${opt.id})">${opt.text}</button>`;
+          li.innerHTML = `<button onclick="vote(${opt.id})">${opt.option_text}</button>`;
           list.appendChild(li);
         });
       });

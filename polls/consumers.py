@@ -36,19 +36,24 @@ class PollVoteConsumer(AsyncWebsocketConsumer):
             poll= await sync_to_async(Poll.objects.get)(id= self.poll_id)
             option= await sync_to_async(PollOption.objects.get)(id= option_id, poll=poll)
             # Check if the user has already voted in this poll
-            existing_vote= await sync_to_async(Vote.objects.filter)(user=user, poll=poll).exists()
+            existing_vote= await sync_to_async(
+                lambda: Vote.objects.filter(user=user, poll=poll).exists()
+            )()
             if existing_vote:
                 return await self.send(text_data=json.dumps({
                     'error': 'You have already voted in this poll.'
                 }))
             # Save the vote
             await sync_to_async(Vote.objects.create)(user= user, poll=poll, option=option)
+            # Increment the vote count for the selected option
+            option.number_of_votes += 1
+            await sync_to_async(option.save)()
 
             # Prepare updated vote counts
             updated_counts= await sync_to_async(list)(
                 PollOption.objects.filter(poll=poll)
                 .annotate(votes_count= Count('votes'))
-                .values('id', 'text', 'votes_count')
+                .values('id', 'option_text', 'votes_count')
             )
             # Broadcast the vote update to all users watching this poll
             await self.channel_layer.group_send(
